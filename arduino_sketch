@@ -1,0 +1,78 @@
+#include <Adafruit_Fingerprint.h>
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(2, 3);  // RX, TX
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
+
+const int buzzerPin = 6;  // Buzzer connected to pin 6
+
+// A simple counter for ID (make sure it persists across sessions if necessary)
+int id = 1;
+
+void setup() {
+  Serial.begin(9600);
+  mySerial.begin(57600);
+
+  pinMode(buzzerPin, OUTPUT);
+  
+  // Buzzer beep when the application starts
+  digitalWrite(buzzerPin, HIGH);  // Turn on buzzer
+  delay(500);  // Beep duration (500 milliseconds)
+  digitalWrite(buzzerPin, LOW);  // Turn off buzzer
+
+  finger.begin(57600);
+  if (finger.verifyPassword()) {
+    Serial.println("Fingerprint sensor detected.");
+  } else {
+    Serial.println("ERROR: Fingerprint sensor not found. Check wiring.");
+    while (1);
+  }
+}
+
+void loop() {
+  int p = finger.getImage();
+  if (p == FINGERPRINT_OK) {
+    p = finger.image2Tz();
+    if (p == FINGERPRINT_OK) {
+      // Capture fingerprint twice for enrollment
+      Serial.println("Place the same finger again for verification...");
+      delay(2000); // Allow time for the user to place the finger again
+      p = finger.getImage();
+      if (p == FINGERPRINT_OK) {
+        p = finger.image2Tz(2); // Second image capture for verification
+        if (p == FINGERPRINT_OK) {
+          p = finger.createModel();
+          if (p == FINGERPRINT_OK) {
+            // Store the fingerprint model with a unique ID
+            int storeResult = finger.storeModel(id);  
+            if (storeResult == FINGERPRINT_OK) {
+              Serial.print("Fingerprint ID: ");
+              Serial.println(id);  // Send the ID back to Python for enrollment confirmation
+              digitalWrite(buzzerPin, HIGH);  // Buzz for successful enrollment
+              delay(1000);  // Buzzer duration
+              digitalWrite(buzzerPin, LOW);
+
+              // Increment the ID for next enrollment
+              id++;
+            } else {
+              Serial.println("Error storing fingerprint model.");
+              digitalWrite(buzzerPin, LOW);
+            }
+          } else {
+            Serial.println("Error creating fingerprint model.");
+          }
+        } else {
+          Serial.println("Error capturing second fingerprint.");
+        }
+      } else {
+        Serial.println("Error capturing first fingerprint.");
+      }
+    } else {
+      Serial.println("Error capturing fingerprint.");
+    }
+  } else {
+    Serial.println("No finger detected.");
+  }
+  delay(1000);  // Wait before checking again
+}
+
