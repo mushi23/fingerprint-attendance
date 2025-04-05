@@ -79,6 +79,7 @@ Cloud Integration: Sync attendance logs via ESP32.
 Enhanced Python GUI: User-friendly interface for attendance management.
 
 🤝 Contributors
+
 Mamuch Dak
 
 Marcel Masaki
@@ -92,6 +93,8 @@ Dillen Kariithi
 Samson Njau
 
 Melvin Kasena
+
+Organization - KCA UNIVERSITY
 
 🌟 Star this repo if you find it useful!
 🔧 Contributions and feedback are welcome.
