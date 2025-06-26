@@ -82,20 +82,6 @@ Enhanced Python GUI: User-friendly interface for attendance management.
 
 Mamuch Dak
 
-Marcel Masaki
-
-Kiplangat Bruno
-
-Stephen Mbugua
-
-Dillen Kariithi
-
-Samson Njau
-
-Melvin Kasena
-
-Organization - KCA UNIVERSITY
-
 🌟 Star this repo if you find it useful!
 🔧 Contributions and feedback are welcome.
 📧 Contact: [mamuchsharif@gmail.com or https://github.com/mushi23/]
